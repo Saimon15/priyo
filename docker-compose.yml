@@ -1,0 +1,25 @@
+version: '3'
+
+
+services:
+  db:
+    image: postgres:9.6
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "54322:5432"
+  web:
+    build: .
+    command: bash -c "cd /app/code && python3 manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./code:/app/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_HOST=db
+      - DJANGO_LOG_LEVEL=DEBUG
+
+volumes:
+  pgdata:
